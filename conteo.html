@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Conteo Regresivo Mejorado</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+  <style>
+    body {
+      background-color: #ffffff;
+      color: #0a0a0a;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+    }
+    .container {
+      text-align: center;
+      margin-top: 50px;
+      position: relative;
+    }
+    .spark {
+      width: 8px;
+      height: 8px;
+      position: absolute;
+      border-radius: 50%;
+      background-color: white;
+      opacity: 0.6;
+      animation: float 5s infinite ease-in-out;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 0.6; }
+      50% { transform: translateY(-20px); opacity: 1; }
+      100% { transform: translateY(0); opacity: 0.6; }
+    }
+
+    .table {
+      background-color: transparent;
+      border-collapse: collapse;
+    }
+    .table th, .table td {
+      border: none;
+    }
+    .table td {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 24px;
+    }
+
+    .progress-bar {
+      background-color: rgb(245, 229, 229);
+      border-radius: 10px;
+      margin-top: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress {
+      height: 30px;
+      border-radius: 10px;
+      text-align: center;
+      line-height: 30px;
+      color: #000;
+      background-color: #4caf50;
+      width: 0%;
+      transition: width 1s ease;
+    }
+    .progress-text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: black;
+    }
+    .running-person {
+      position: absolute;
+      top: 30%;
+      transform: translateY(-50%);
+      width: 53px;
+      height: auto;
+      z-index: 1;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        margin-top: 20px;
+        width: 100%;
+        height: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      .table {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h3 style="font-size: 20px;"><b style="color: #4caf50;"><u>ATENCIÓN PROGRAMADA A DOMICILIO</u></b></h3>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Días</th>
+          <th>Horas</th>
+          <th>Minutos</th>
+          <th>Segundos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td id="days">0</td>
+          <td id="hours">0</td>
+          <td id="minutes">0</td>
+          <td id="seconds">0</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="progress-bar">
+      <div class="progress" id="progress">
+        <img src="corredor.gif" class="running-person" id="runner">
+      </div>
+      <div class="progress-text" id="progressText">0%</div>
+    </div>
+    
+
+    <h3 style="font-size: 15px;"><b>Viernes 25/04/2025 09:00 hrs</b></h3>
+
+    <table class="table table-bordered mt-5">
+      <thead>
+        <tr><th style="color: #4caf50;">PROBLEMA REPORTADO POR EL CLIENTE : Paco Perez Salvador</th></tr>
+      </thead>
+      <tbody>
+        <tr><td style="font-size: 20px;">El Equipo No Enciende</td></tr>
+      </tbody>
+    </table>
+
+    
+    <table class="table table-bordered mt-5">
+      <thead>
+        <tr><th style="color: #4caf50;">Dirrección</th></tr>
+      </thead>
+      <tbody>
+        <tr><td style="font-size: 20px;">AA.HH EL salvador N°250 - Pueblo Nuevo - Chincha</td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered mt-5">
+      <thead>
+        <tr><th style="color: #4caf50;">TRABAJO A REALIZAR</th></tr>
+      </thead>
+      <tbody>
+        <tr><td style="font-size: 20px;">Mantenimiento General de tres PC <br>Mantenimiento General de Laptop</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const endTime = new Date("2025-04-25T09:09:00").getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const timeLeft = endTime - now;
+
+      if (timeLeft <= 0) {
+        ["days", "hours", "minutes", "seconds"].forEach(id => document.getElementById(id).innerText = "0");
+        document.getElementById("progress").style.width = "100%";
+        document.getElementById("progressText").innerText = "100%";
+        clearInterval(interval);
+        return;
+      }
+
+      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+      document.getElementById("days").innerText = days;
+      document.getElementById("hours").innerText = hours;
+      document.getElementById("minutes").innerText = minutes;
+      document.getElementById("seconds").innerText = seconds;
+
+      const today = new Date().setHours(0, 0, 0, 0);
+      const totalDuration = endTime - today;
+      const elapsed = now - today;
+      const progressPercentage = Math.min(Math.floor((elapsed / totalDuration) * 100), 100);
+
+      const progress = document.getElementById("progress");
+      const progressText = document.getElementById("progressText");
+      const runner = document.getElementById("runner");
+
+      progress.style.width = progressPercentage + "%";
+      progressText.innerText = progressPercentage + "%";
+
+      const bar = document.querySelector(".progress-bar");
+      const barWidth = bar.offsetWidth;
+      const runnerWidth = runner.offsetWidth;
+      const leftPos = (barWidth - runnerWidth) * (progressPercentage / 100);
+      runner.style.left = `${leftPos}px`;
+    }
+
+    const interval = setInterval(updateCountdown, 1000);
+
+    // Generar chispitas flotantes
+    function generateSparks() {
+      const colors = ['#ffffff', '#eeeeee', '#dddddd'];
+      const container = document.querySelector('.container');
+
+      for (let i = 0; i < 80; i++) {
+        const spark = document.createElement('div');
+        spark.classList.add('spark');
+        spark.style.left = Math.random() * container.offsetWidth + 'px';
+        spark.style.top = Math.random() * container.offsetHeight + 'px';
+        spark.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        spark.style.animationDelay = (Math.random() * 5) + "s";
+        container.appendChild(spark);
+      }
+    }
+
+    generateSparks();
+  </script>
+</body>
+</html>
